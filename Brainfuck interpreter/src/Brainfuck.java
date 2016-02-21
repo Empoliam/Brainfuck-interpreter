@@ -3,10 +3,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Brainfuck 
-{
-	public static void main(String[] args) 
-	{
+public class Brainfuck {
+	public static void main(String[] args) {
 		byte[] memory = new byte[256];
 		byte pointer = 0;
 		int instruction = 0;
@@ -29,10 +27,8 @@ public class Brainfuck
 			e.printStackTrace();
 		}
 		decode = input.toCharArray();
-		while(instruction < decode.length)
-		{		
-			switch(decode[instruction])
-			{
+		while(instruction < decode.length){		
+			switch(decode[instruction]){
 			case '+' :
 				memory[(int)pointer&0xFF] ++;
 				instruction ++;
@@ -50,15 +46,12 @@ public class Brainfuck
 				instruction ++;
 				break;
 			case '[' :
-				if(memory[(int)pointer&0xFF] == 0)
-				{
+				if(memory[(int)pointer&0xFF] == 0){
 					int count = 0;
-					while(instruction < decode.length)
-					{
+					while(instruction < decode.length){
 						instruction ++;
 						if(decode[instruction] == '[') count ++;
-						else if(decode[instruction] == ']')
-						{
+						else if(decode[instruction] == ']'){
 							if(count == 0) break;
 							else count--;
 						}
@@ -67,15 +60,12 @@ public class Brainfuck
 				else instruction ++;
 				break;
 			case ']' :
-				if(memory[(int)pointer&0xFF] != 0)
-				{
+				if(memory[(int)pointer&0xFF] != 0){
 					int count = 0;
-					while(instruction > 0)
-					{
+					while(instruction > 0){
 						instruction --;
 						if(decode[instruction] == ']') count ++;
-						else if(decode[instruction] == '[')
-						{
+						else if(decode[instruction] == '['){
 							if(count == 0) break;
 							else count--;
 						}
@@ -84,7 +74,7 @@ public class Brainfuck
 				else instruction ++;
 				break;
 			case '.' :
-				System.out.print((char)memory[(int)pointer&0xFF]);
+				System.out.print((char)((int)memory[(int)pointer&0xFF]&0xFF));
 				instruction ++;
 				break;
 			case ',' :
