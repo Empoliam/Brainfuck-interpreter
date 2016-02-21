@@ -5,44 +5,30 @@ import java.util.Scanner;
 
 public class Brainfuck 
 {
-
-
-
 	public static void main(String[] args) 
 	{
-
 		byte[] memory = new byte[256];
-		int[] jumps = new int[2048];
 		byte pointer = 0;
 		int instruction = 0;
 		String input = "";
 		char[] decode;
-		int jumpback = 0;
-		int jumpforward = 0;
-
 		Scanner in = new Scanner(System.in);
 		String path;
-
 		System.out.println("Which file to interpret?");
 		path = in.next();
-
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			String line = br.readLine();
 			while(line != null)
 			{
-
 				input = input + line;
 				line = br.readLine();
-
 			}
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		decode = input.toCharArray();
-
 		while(instruction < decode.length)
 		{		
 			switch(decode[instruction])
@@ -64,47 +50,41 @@ public class Brainfuck
 				instruction ++;
 				break;
 			case '[' :
-				if(jumps[instruction] == 0)
+				if(memory[(int)pointer&0xFF] == 0)
 				{
-					jumpback = instruction;
-					for(int x = instruction + 1; x < decode.length; x ++)
+					int count = 0;
+					while(instruction < decode.length)
 					{
-						int nest = 0;
-						if(decode[x] == '[')
+						instruction ++;
+						if(decode[instruction] == '[') count ++;
+						else if(decode[instruction] == ']')
 						{
-							nest ++;
-							x ++;
+							if(count == 0) break;
+							else count--;
 						}
-						else if(decode[x] == ']')
-						{
-							if(nest == 0)
-							{
-								jumps[x] = jumpback;							
-								jumpforward = x;
-								break;
-							}
-							else
-							{
-								nest --;
-								x ++;
-							}
-						}
-						else x ++;
 					}
-					jumps[instruction] = jumpforward;
-				}				
-				else
-				{
-					if(memory[(int)pointer&0xFF] == 0) instruction = jumps[instruction];
-					else instruction ++;
 				}
+				else instruction ++;
 				break;
 			case ']' :
-				if(memory[(int)pointer&0xFF] != 0) instruction = jumps[instruction];
+				if(memory[(int)pointer&0xFF] != 0)
+				{
+					int count = 0;
+					while(instruction > 0)
+					{
+						instruction --;
+						if(decode[instruction] == ']') count ++;
+						else if(decode[instruction] == '[')
+						{
+							if(count == 0) break;
+							else count--;
+						}
+					}
+				}
 				else instruction ++;
 				break;
 			case '.' :
-				System.out.println(memory[(int)pointer&0xFF]);
+				System.out.print((char)memory[(int)pointer&0xFF]);
 				instruction ++;
 				break;
 			case ',' :
@@ -113,11 +93,7 @@ public class Brainfuck
 			default :
 				instruction++;
 			}
-
 		}
-		
 		in.close();
-
 	}
-
 }
