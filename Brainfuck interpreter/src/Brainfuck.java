@@ -79,6 +79,7 @@ public class Brainfuck {
 				break;
 			case ',' :
 				memory[(int)pointer&0xFF] = (byte) in.nextLine().charAt(0);
+				instruction++;
 				break;
 			default :
 				instruction++;
